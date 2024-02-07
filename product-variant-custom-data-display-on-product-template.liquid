@@ -1,0 +1,25 @@
+{% capture 'meta_data' %}
+{% for variant in product.variants %}
+  {{ variant.id}}: '{{ variant.metafields.custom.variant_description | metafield_tag }}' {%- comment -%} Replace it with your NAMESPACE.KEY value {%- endcomment -%}
+  {% unless forloop.last %},{% endunless %}
+{% endfor %}
+{% endcapture %}
+
+<script>
+  let metaData = { {{ meta_data }} };
+  document.addEventListener("DOMContentLoaded", function() {
+    var selector = document.querySelector('input[name=id]');
+    if(selector) {
+      selector.addEventListener('change', function() {
+        let variant_id = this.value;
+          if(!variant_id) return;
+          var material = metaData[variant_id],
+            meta = document.querySelector('.product__description.rte'); // Find your class which has metafiled or set the ID for the metafield element like a below guide
+          if(material && meta && material != null) {
+            meta.innerHTML = material;
+          }
+          else {meta.innerHTML = ""}
+      })
+    }
+  });
+</script>
